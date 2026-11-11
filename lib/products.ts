@@ -144,3 +144,8 @@ export function getRelatedProducts(handle: string): Product[] {
   if (!collection) return [];
   return collection.products.filter((p) => p.handle !== handle);
 }
+
+export function getProductWeightKg(product: Product): number {
+  const match = product.title.match(/^(\d+)\s*kg/i);
+  return match ? Number(match[1]) : 6;
+}

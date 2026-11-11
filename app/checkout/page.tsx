@@ -1,12 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { formatCLP } from '@/lib/format';
+import ShippingCalculator from '@/components/ShippingCalculator';
+
+type Rate = { courierName: string; serviceName: string; price: number; days: number };
 
 export default function CheckoutPage() {
   const { lines, subtotal } = useCart();
+  const [shippingRate, setShippingRate] = useState<Rate | null>(null);
+  const total = subtotal + (shippingRate?.price ?? 0);
 
   if (lines.length === 0) {
     return (
@@ -39,9 +45,21 @@ export default function CheckoutPage() {
         ))}
       </ul>
 
+      <div className="mb-8">
+        <ShippingCalculator lines={lines} onSelect={setShippingRate} />
+      </div>
+
+      <div className="mb-2 flex items-center justify-between text-sm opacity-70">
+        <span>Subtotal</span>
+        <span>{formatCLP(subtotal)}</span>
+      </div>
+      <div className="mb-8 flex items-center justify-between text-sm opacity-70">
+        <span>Envío</span>
+        <span>{shippingRate ? formatCLP(shippingRate.price) : 'Por calcular'}</span>
+      </div>
       <div className="mb-8 flex items-center justify-between text-xl font-black">
         <span>Total</span>
-        <span>{formatCLP(subtotal)}</span>
+        <span>{formatCLP(total)}</span>
       </div>
 
       <button type="button" disabled className="btn btn-primary w-full cursor-not-allowed opacity-50">
