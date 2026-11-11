@@ -29,7 +29,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-background/70" />
       <div className="relative z-10 flex max-w-xl flex-col items-center gap-6">
         <h1 className="text-4xl font-black leading-tight md:text-6xl">Sabemos que tu gato te lo pidió</h1>
-        <p className="text-lg font-bold">Arena premium - tu gato tenga el mejor baño del barrio.</p>
+        <p className="text-lg font-bold">Arena premium - tu gato tendrá el mejor baño de su barrio.</p>
         <Link
           href="/collections"
           className="btn"
