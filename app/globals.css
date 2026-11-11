@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #faf4ec;
+  --color-foreground: #3a5238;
+  --color-sage: #6d8b6a;
+  --color-tan: #dcc2a0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.9rem 1.75rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background-color: var(--color-foreground);
+  color: var(--color-background);
+  border: 1px solid var(--color-foreground);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-foreground);
+  border: 1px solid var(--color-foreground);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+.product-description p {
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+.product-description p:last-child {
+  margin-bottom: 0;
+}
+
+.product-description p > strong:only-child,
+.product-description p > strong:first-child:last-of-type {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.product-description ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-description li {
+  line-height: 1.6;
+  padding-left: 0.25rem;
+}
+
+.product-description li::marker {
+  color: var(--color-foreground);
+}
+
+.product-description strong {
+  font-weight: 800;
+}
