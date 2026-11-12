@@ -6,13 +6,46 @@ import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { formatCLP } from '@/lib/format';
 import ShippingCalculator from '@/components/ShippingCalculator';
+import ShippingAddressForm from '@/components/ShippingAddressForm';
+import { communes } from '@/lib/communes';
 
 type Rate = { courierName: string; serviceName: string; price: number; days: number };
+type AddressFields = {
+  fullName: string;
+  street: string;
+  number: string;
+  complement: string;
+  phone: string;
+  email: string;
+};
+
+const emptyAddress: AddressFields = {
+  fullName: '',
+  street: '',
+  number: '',
+  complement: '',
+  phone: '',
+  email: '',
+};
 
 export default function CheckoutPage() {
   const { lines, subtotal } = useCart();
+  const [region, setRegion] = useState('');
+  const [communeId, setCommuneId] = useState<number | null>(null);
   const [shippingRate, setShippingRate] = useState<Rate | null>(null);
+  const [address, setAddress] = useState<AddressFields>(emptyAddress);
   const total = subtotal + (shippingRate?.price ?? 0);
+
+  const addressComplete =
+    communeId !== null &&
+    address.fullName.trim() !== '' &&
+    address.street.trim() !== '' &&
+    address.number.trim() !== '' &&
+    address.phone.trim() !== '' &&
+    address.email.trim() !== '';
+
+  const canPay = addressComplete && shippingRate !== null;
+  const communeName = communeId !== null ? communes.find((c) => c.id === communeId)?.name : undefined;
 
   if (lines.length === 0) {
     return (
@@ -45,8 +78,29 @@ export default function CheckoutPage() {
         ))}
       </ul>
 
+      <div className="mb-6">
+        <ShippingCalculator
+          lines={lines}
+          region={region}
+          communeId={communeId}
+          onRegionChange={(r) => {
+            setRegion(r);
+            setAddress(emptyAddress);
+          }}
+          onCommuneChange={setCommuneId}
+          onSelect={setShippingRate}
+        />
+      </div>
+
       <div className="mb-8">
-        <ShippingCalculator lines={lines} onSelect={setShippingRate} />
+        <ShippingAddressForm
+          address={address}
+          onChange={setAddress}
+          disabled={communeId === null}
+        />
+        {communeName && (
+          <p className="mt-2 text-xs opacity-60">Despachando a {communeName}, {region}.</p>
+        )}
       </div>
 
       <div className="mb-2 flex items-center justify-between text-sm opacity-70">
@@ -66,7 +120,9 @@ export default function CheckoutPage() {
         Continuar con el pago (próximamente)
       </button>
       <p className="mt-4 text-center text-xs opacity-60">
-        El pago con Webpay y Mercado Pago se conectará aquí una vez configurados.
+        {canPay
+          ? 'El pago con Webpay y Mercado Pago se conectará aquí una vez configurados.'
+          : 'Completa el envío y tus datos de despacho para continuar con el pago.'}
       </p>
     </section>
   );

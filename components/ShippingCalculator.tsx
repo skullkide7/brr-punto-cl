@@ -9,13 +9,19 @@ type Rate = { courierName: string; serviceName: string; price: number; days: num
 
 export default function ShippingCalculator({
   lines,
+  region,
+  communeId,
+  onRegionChange,
+  onCommuneChange,
   onSelect,
 }: {
   lines: CartLine[];
+  region: string;
+  communeId: number | null;
+  onRegionChange: (region: string) => void;
+  onCommuneChange: (communeId: number | null) => void;
   onSelect: (rate: Rate | null) => void;
 }) {
-  const [region, setRegion] = useState('');
-  const [communeId, setCommuneId] = useState<number | null>(null);
   const [rates, setRates] = useState<Rate[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
@@ -70,8 +76,8 @@ export default function ShippingCalculator({
         <select
           value={region}
           onChange={(e) => {
-            setRegion(e.target.value);
-            setCommuneId(null);
+            onRegionChange(e.target.value);
+            onCommuneChange(null);
             setRates([]);
             setSelectedIndex(null);
             onSelect(null);
@@ -88,7 +94,7 @@ export default function ShippingCalculator({
 
         <select
           value={communeId ?? ''}
-          onChange={(e) => setCommuneId(e.target.value ? Number(e.target.value) : null)}
+          onChange={(e) => onCommuneChange(e.target.value ? Number(e.target.value) : null)}
           disabled={!region}
           className="rounded-full border border-foreground/30 bg-background px-4 py-2 text-sm disabled:opacity-50"
         >

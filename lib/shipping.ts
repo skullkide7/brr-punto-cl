@@ -19,6 +19,17 @@ export type ShippingRate = {
   days: number;
 };
 
+export type ShippingAddress = {
+  fullName: string;
+  street: string;
+  number: string;
+  complement: string;
+  communeId: number;
+  communeName: string;
+  phone: string;
+  email: string;
+};
+
 export type ShippingQuoteResult =
   | { ok: true; rates: ShippingRate[] }
   | { ok: false; error: string };
