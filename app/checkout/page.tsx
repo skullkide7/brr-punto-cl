@@ -111,10 +111,11 @@ export default function CheckoutPage() {
         <span>Envío</span>
         <span>{shippingRate ? formatCLP(shippingRate.price) : 'Por calcular'}</span>
       </div>
-      <div className="mb-8 flex items-center justify-between text-xl font-black">
+      <div className="mb-1 flex items-center justify-between text-xl font-black">
         <span>Total</span>
         <span>{formatCLP(total)}</span>
       </div>
+      <p className="mb-8 text-right text-xs opacity-60">IVA incluido</p>
 
       <button type="button" disabled className="btn btn-primary w-full cursor-not-allowed opacity-50">
         Continuar con el pago (próximamente)
