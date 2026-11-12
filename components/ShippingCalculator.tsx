@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { regions, getCommunesByRegion } from '@/lib/communes';
 import { formatCLP } from '@/lib/format';
 import { CartLine } from '@/lib/cart-context';
@@ -28,40 +28,57 @@ export default function ShippingCalculator({
   const [error, setError] = useState('');
 
   const communes = useMemo(() => (region ? getCommunesByRegion(region) : []), [region]);
+  const linesSignature = lines.map((l) => `${l.handle}:${l.quantity}`).join(',');
 
-  async function handleCalculate() {
-    if (!communeId) return;
+  useEffect(() => {
+    if (!communeId) {
+      setRates([]);
+      setSelectedIndex(null);
+      setStatus('idle');
+      setError('');
+      return;
+    }
+
+    let cancelled = false;
     setStatus('loading');
     setError('');
     setRates([]);
     setSelectedIndex(null);
     onSelect(null);
 
-    try {
-      const response = await fetch('/api/shipping/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          communeId,
-          items: lines.map((l) => ({ handle: l.handle, quantity: l.quantity })),
-        }),
-      });
-      const data = await response.json();
-      if (!data.ok) {
+    fetch('/api/shipping/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        communeId,
+        items: lines.map((l) => ({ handle: l.handle, quantity: l.quantity })),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (!data.ok) {
+          setStatus('error');
+          setError(data.error ?? 'No se pudo calcular el envío.');
+          return;
+        }
+        setRates(data.rates);
+        setStatus('idle');
+        if (data.rates.length === 0) {
+          setError('No hay couriers disponibles para esa comuna.');
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
         setStatus('error');
-        setError(data.error ?? 'No se pudo calcular el envío.');
-        return;
-      }
-      setRates(data.rates);
-      setStatus('idle');
-      if (data.rates.length === 0) {
-        setError('No hay couriers disponibles para esa comuna.');
-      }
-    } catch {
-      setStatus('error');
-      setError('No se pudo calcular el envío. Intenta nuevamente.');
-    }
-  }
+        setError('No se pudo calcular el envío. Intenta nuevamente.');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [communeId, linesSignature]);
 
   function selectRate(index: number) {
     setSelectedIndex(index);
@@ -107,15 +124,7 @@ export default function ShippingCalculator({
         </select>
       </div>
 
-      <button
-        type="button"
-        onClick={handleCalculate}
-        disabled={!communeId || status === 'loading'}
-        className="btn btn-outline w-fit disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {status === 'loading' ? 'Calculando…' : 'Calcular envío'}
-      </button>
-
+      {status === 'loading' && <p className="text-sm opacity-60">Calculando envío…</p>}
       {error && <p className="text-sm text-red-700">{error}</p>}
 
       {rates.length > 0 && (
