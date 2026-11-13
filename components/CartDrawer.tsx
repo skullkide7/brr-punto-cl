@@ -2,13 +2,41 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { formatCLP } from '@/lib/format';
 
 export default function CartDrawer() {
-  const { lines, isOpen, closeCart, updateQuantity, removeItem, subtotal } = useCart();
+  const {
+    lines,
+    isOpen,
+    closeCart,
+    updateQuantity,
+    removeItem,
+    subtotal,
+    appliedDiscount,
+    discountAmount,
+    total,
+    applyDiscountCode,
+    removeDiscount,
+  } = useCart();
   const [discount, setDiscount] = useState('');
+  const [discountError, setDiscountError] = useState('');
+  const [applying, setApplying] = useState(false);
+
+  async function handleApplyDiscount(e: FormEvent) {
+    e.preventDefault();
+    if (!discount.trim()) return;
+    setApplying(true);
+    setDiscountError('');
+    const result = await applyDiscountCode(discount);
+    setApplying(false);
+    if (!result.ok) {
+      setDiscountError(result.error ?? 'Código inválido.');
+      return;
+    }
+    setDiscount('');
+  }
 
   return (
     <>
@@ -102,26 +130,55 @@ export default function CartDrawer() {
             </div>
 
             <div className="flex flex-col gap-4 border-t border-tan/60 p-5">
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                className="flex items-center gap-2 rounded-full border border-foreground/20 p-1 pl-4"
-              >
-                <input
-                  value={discount}
-                  onChange={(e) => setDiscount(e.target.value)}
-                  placeholder="Código de descuento"
-                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-foreground/50"
-                />
-                <button type="submit" className="btn btn-outline px-4 py-2 text-xs">
-                  Aplicar
-                </button>
-              </form>
+              {appliedDiscount ? (
+                <div className="flex items-center justify-between rounded-full border border-sage/60 bg-sage/10 px-4 py-2 text-sm">
+                  <span className="font-bold">
+                    Código {appliedDiscount.code} (-{appliedDiscount.percentage}%)
+                  </span>
+                  <button type="button" onClick={removeDiscount} className="text-xs opacity-60 hover:opacity-100">
+                    Quitar
+                  </button>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleApplyDiscount}
+                  className="flex items-center gap-2 rounded-full border border-foreground/20 p-1 pl-4"
+                >
+                  <input
+                    value={discount}
+                    onChange={(e) => setDiscount(e.target.value)}
+                    placeholder="Código de descuento"
+                    className="flex-1 bg-transparent text-sm outline-none placeholder:text-foreground/50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={applying}
+                    className="btn btn-outline px-4 py-2 text-xs disabled:opacity-50"
+                  >
+                    {applying ? 'Validando…' : 'Aplicar'}
+                  </button>
+                </form>
+              )}
+              {discountError && <p className="text-xs text-red-700">{discountError}</p>}
+
+              {appliedDiscount && (
+                <div className="flex items-center justify-between text-sm opacity-70">
+                  <span>Subtotal</span>
+                  <span>{formatCLP(subtotal)}</span>
+                </div>
+              )}
+              {appliedDiscount && (
+                <div className="flex items-center justify-between text-sm text-sage">
+                  <span>Descuento</span>
+                  <span>-{formatCLP(discountAmount)}</span>
+                </div>
+              )}
 
               <div className="flex items-center justify-between text-base font-black">
                 <span>Total estimado</span>
-                <span>{formatCLP(subtotal)}</span>
+                <span>{formatCLP(total)}</span>
               </div>
-              <p className="text-xs opacity-60">Impuestos incluidos. Envío calculado en el pago.</p>
+              <p className="text-xs opacity-60">IVA incluido. Envío calculado en el pago.</p>
               <Link href="/checkout" onClick={closeCart} className="btn btn-primary w-full">
                 Finalizar compra
               </Link>

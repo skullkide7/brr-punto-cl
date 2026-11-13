@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
@@ -29,12 +29,29 @@ const emptyAddress: AddressFields = {
 };
 
 export default function CheckoutPage() {
-  const { lines, subtotal } = useCart();
+  const { lines, subtotal, appliedDiscount, discountAmount, applyDiscountCode, removeDiscount } = useCart();
   const [region, setRegion] = useState('');
   const [communeId, setCommuneId] = useState<number | null>(null);
   const [shippingRate, setShippingRate] = useState<Rate | null>(null);
   const [address, setAddress] = useState<AddressFields>(emptyAddress);
-  const total = subtotal + (shippingRate?.price ?? 0);
+  const [discountInput, setDiscountInput] = useState('');
+  const [discountError, setDiscountError] = useState('');
+  const [applyingDiscount, setApplyingDiscount] = useState(false);
+  const total = subtotal - discountAmount + (shippingRate?.price ?? 0);
+
+  async function handleApplyDiscount(e: FormEvent) {
+    e.preventDefault();
+    if (!discountInput.trim()) return;
+    setApplyingDiscount(true);
+    setDiscountError('');
+    const result = await applyDiscountCode(discountInput);
+    setApplyingDiscount(false);
+    if (!result.ok) {
+      setDiscountError(result.error ?? 'Código inválido.');
+      return;
+    }
+    setDiscountInput('');
+  }
 
   const addressComplete =
     communeId !== null &&
@@ -103,10 +120,49 @@ export default function CheckoutPage() {
         )}
       </div>
 
+      <div className="mb-6">
+        {appliedDiscount ? (
+          <div className="flex items-center justify-between rounded-full border border-sage/60 bg-sage/10 px-4 py-2 text-sm">
+            <span className="font-bold">
+              Código {appliedDiscount.code} (-{appliedDiscount.percentage}%)
+            </span>
+            <button type="button" onClick={removeDiscount} className="text-xs opacity-60 hover:opacity-100">
+              Quitar
+            </button>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleApplyDiscount}
+            className="flex items-center gap-2 rounded-full border border-foreground/20 p-1 pl-4"
+          >
+            <input
+              value={discountInput}
+              onChange={(e) => setDiscountInput(e.target.value)}
+              placeholder="Código de descuento"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-foreground/50"
+            />
+            <button
+              type="submit"
+              disabled={applyingDiscount}
+              className="btn btn-outline px-4 py-2 text-xs disabled:opacity-50"
+            >
+              {applyingDiscount ? 'Validando…' : 'Aplicar'}
+            </button>
+          </form>
+        )}
+        {discountError && <p className="mt-2 text-xs text-red-700">{discountError}</p>}
+      </div>
+
       <div className="mb-2 flex items-center justify-between text-sm opacity-70">
         <span>Subtotal</span>
         <span>{formatCLP(subtotal)}</span>
       </div>
+      {appliedDiscount && (
+        <div className="mb-2 flex items-center justify-between text-sm text-sage">
+          <span>Descuento</span>
+          <span>-{formatCLP(discountAmount)}</span>
+        </div>
+      )}
       <div className="mb-8 flex items-center justify-between text-sm opacity-70">
         <span>Envío</span>
         <span>{shippingRate ? formatCLP(shippingRate.price) : 'Por calcular'}</span>
