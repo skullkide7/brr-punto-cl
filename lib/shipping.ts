@@ -20,10 +20,12 @@ export type ShippingRate = {
 };
 
 export type ShippingAddress = {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   street: string;
   number: string;
   complement: string;
+  postalCode: string;
   communeId: number;
   communeName: string;
   phone: string;
