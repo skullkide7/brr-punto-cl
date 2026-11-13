@@ -33,7 +33,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
           <div>
             <p className="text-2xl font-black">{formatCLP(product.price)}</p>
             {unitPrice !== null && (
-              <p className="text-xs opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
+              <p className="text-sm opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
             )}
           </div>
           <AddToCartButton product={product} />

@@ -38,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <h3 className="font-heading text-lg font-black leading-tight">{product.title}</h3>
         <p className="text-xl font-black">{formatCLP(product.price)}</p>
         {unitPrice !== null && (
-          <p className="text-xs opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
+          <p className="text-sm opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
         )}
       </Link>
     </div>
