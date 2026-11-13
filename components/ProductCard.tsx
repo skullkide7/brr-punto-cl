@@ -2,13 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Product } from '@/lib/products';
+import { Product, getUnitPrice } from '@/lib/products';
 import { formatCLP } from '@/lib/format';
 import { useCart } from '@/lib/cart-context';
 import { CartIcon } from '@/components/Icons';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const unitPrice = getUnitPrice(product);
 
   return (
     <div className="flex flex-col gap-4 rounded-card border-2 border-tan p-6 transition-transform hover:-translate-y-1">
@@ -36,6 +37,9 @@ export default function ProductCard({ product }: { product: Product }) {
       <Link href={`/products/${product.handle}`} className="flex flex-col gap-1">
         <h3 className="font-heading text-lg font-black leading-tight">{product.title}</h3>
         <p className="text-xl font-black">{formatCLP(product.price)}</p>
+        {unitPrice !== null && (
+          <p className="text-xs opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
+        )}
       </Link>
     </div>
   );

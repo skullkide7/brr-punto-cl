@@ -149,3 +149,20 @@ export function getProductWeightKg(product: Product): number {
   const match = product.title.match(/^(\d+)\s*kg/i);
   return match ? Number(match[1]) : 6;
 }
+
+const PACK_SIZE_BY_COLLECTION: Record<string, number> = {
+  'pack-2': 2,
+  'despreocupate-3pack': 3,
+};
+
+export function getPackSize(product: Product): number {
+  const collection = collections.find((c) => c.products.some((p) => p.handle === product.handle));
+  if (!collection) return 1;
+  return PACK_SIZE_BY_COLLECTION[collection.handle] ?? 1;
+}
+
+export function getUnitPrice(product: Product): number | null {
+  const packSize = getPackSize(product);
+  if (packSize <= 1) return null;
+  return Math.round(product.price / packSize);
+}

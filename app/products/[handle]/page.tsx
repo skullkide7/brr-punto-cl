@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import AddToCartButton from '@/components/AddToCartButton';
 import ProductCard from '@/components/ProductCard';
-import { allProducts, getProductByHandle, getRelatedProducts } from '@/lib/products';
+import { allProducts, getProductByHandle, getRelatedProducts, getUnitPrice } from '@/lib/products';
 import { formatCLP } from '@/lib/format';
 
 export function generateStaticParams() {
@@ -14,6 +14,7 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
   if (!product) return notFound();
 
   const relatedProducts = getRelatedProducts(params.handle);
+  const unitPrice = getUnitPrice(product);
 
   return (
     <>
@@ -29,7 +30,12 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
         </div>
         <div className="flex flex-col gap-6">
           <h1 className="text-3xl font-black">{product.title}</h1>
-          <p className="text-2xl font-black">{formatCLP(product.price)}</p>
+          <div>
+            <p className="text-2xl font-black">{formatCLP(product.price)}</p>
+            {unitPrice !== null && (
+              <p className="text-xs opacity-60">{formatCLP(unitPrice)} c/u (6 kg)</p>
+            )}
+          </div>
           <AddToCartButton product={product} />
           <div
             className="product-description opacity-90"
