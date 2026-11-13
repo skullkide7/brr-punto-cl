@@ -75,16 +75,19 @@ export default function CheckoutPage() {
 
   if (lines.length === 0) {
     return (
-      <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
-        <h1 className="text-2xl font-black">Tu carrito está vacío</h1>
-        <Link href="/" className="btn btn-primary">
-          Volver a la tienda
-        </Link>
-      </section>
+      <div className="w-full bg-white">
+        <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
+          <h1 className="text-2xl font-black">Tu carrito está vacío</h1>
+          <Link href="/" className="btn btn-primary">
+            Volver a la tienda
+          </Link>
+        </section>
+      </div>
     );
   }
 
   return (
+    <div className="w-full bg-white">
     <section className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-16 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:px-6">
       {/* Left column: contact + delivery form */}
       <div className="flex flex-col gap-10">
@@ -164,7 +167,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Right column: order summary */}
-      <div className="flex flex-col gap-6 rounded-card bg-white p-8 lg:sticky lg:top-28 lg:self-start">
+      <div className="flex flex-col gap-6 rounded-card bg-tan/15 p-8 lg:sticky lg:top-28 lg:self-start">
         <div className="relative h-12 w-16">
           <Image src={LOGO_URL} alt="BRR" fill sizes="64px" className="object-contain object-left" />
         </div>
@@ -248,5 +251,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </section>
+    </div>
   );
 }
