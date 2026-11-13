@@ -164,7 +164,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Right column: order summary */}
-      <div className="flex flex-col gap-6 rounded-card bg-tan/15 p-8 lg:sticky lg:top-28 lg:self-start">
+      <div className="flex flex-col gap-6 rounded-card bg-white p-8 lg:sticky lg:top-28 lg:self-start">
         <div className="relative h-12 w-16">
           <Image src={LOGO_URL} alt="BRR" fill sizes="64px" className="object-contain object-left" />
         </div>
