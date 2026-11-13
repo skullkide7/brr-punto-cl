@@ -8,12 +8,7 @@ type DiscountCode = {
   createdAt: string;
 };
 
-export default function AdminDiscountsClient() {
-  const [authChecked, setAuthChecked] = useState(false);
-  const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState('');
-
+export default function AdminDiscountsPanel() {
   const [codes, setCodes] = useState<DiscountCode[]>([]);
   const [listError, setListError] = useState('');
 
@@ -25,11 +20,6 @@ export default function AdminDiscountsClient() {
 
   async function loadCodes() {
     const response = await fetch('/api/admin/discounts');
-    if (response.status === 401) {
-      setAuthed(false);
-      setAuthChecked(true);
-      return;
-    }
     const data = await response.json();
     if (data.ok) {
       setCodes(data.codes);
@@ -37,37 +27,11 @@ export default function AdminDiscountsClient() {
     } else {
       setListError(data.error ?? 'No se pudo cargar la lista.');
     }
-    setAuthed(true);
-    setAuthChecked(true);
   }
 
   useEffect(() => {
     loadCodes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function handleLogin(e: FormEvent) {
-    e.preventDefault();
-    setLoginError('');
-    const response = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
-    const data = await response.json();
-    if (!data.ok) {
-      setLoginError(data.error ?? 'Contraseña incorrecta.');
-      return;
-    }
-    setPassword('');
-    await loadCodes();
-  }
-
-  async function handleLogout() {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    setAuthed(false);
-    setCodes([]);
-  }
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
@@ -100,44 +64,9 @@ export default function AdminDiscountsClient() {
     await loadCodes();
   }
 
-  if (!authChecked) {
-    return <p className="p-8 text-sm opacity-60">Cargando…</p>;
-  }
-
-  if (!authed) {
-    return (
-      <section className="mx-auto flex max-w-sm flex-col gap-4 px-4 py-24">
-        <h1 className="text-xl font-black">Acceso administrador</h1>
-        <form onSubmit={handleLogin} className="flex flex-col gap-3">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Contraseña"
-            className="rounded-full border border-foreground/30 bg-background px-4 py-2 text-sm"
-          />
-          <button type="submit" className="btn btn-primary">
-            Entrar
-          </button>
-          {loginError && <p className="text-sm text-red-700">{loginError}</p>}
-        </form>
-      </section>
-    );
-  }
-
   return (
-    <section className="mx-auto max-w-2xl px-4 py-16">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-black">Códigos de descuento</h1>
-        <button type="button" onClick={handleLogout} className="text-sm opacity-60 hover:opacity-100">
-          Cerrar sesión
-        </button>
-      </div>
-
-      <form
-        onSubmit={handleCreate}
-        className="mb-8 flex flex-col gap-3 rounded-card border-2 border-tan p-6"
-      >
+    <div>
+      <form onSubmit={handleCreate} className="mb-8 flex flex-col gap-3 rounded-card border-2 border-tan p-6">
         <h2 className="font-heading text-lg font-black">Generar nuevo código</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <select
@@ -167,11 +96,7 @@ export default function AdminDiscountsClient() {
             className="rounded-full border border-foreground/30 bg-background px-4 py-2 text-sm sm:col-span-2"
           />
         </div>
-        <button
-          type="submit"
-          disabled={creating}
-          className="btn btn-primary w-fit disabled:opacity-50"
-        >
+        <button type="submit" disabled={creating} className="btn btn-primary w-fit disabled:opacity-50">
           {creating ? 'Generando…' : 'Generar código'}
         </button>
         {createError && <p className="text-sm text-red-700">{createError}</p>}
@@ -212,6 +137,6 @@ export default function AdminDiscountsClient() {
           ))}
         </ul>
       )}
-    </section>
+    </div>
   );
 }

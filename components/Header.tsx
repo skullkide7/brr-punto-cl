@@ -57,9 +57,9 @@ export default function Header() {
             >
               <SearchIcon className="h-5 w-5" />
             </button>
-            <button type="button" aria-label="Cuenta" className="hidden md:block">
+            <Link href="/cuenta" aria-label="Cuenta" className="hidden md:block">
               <AccountIcon className="h-5 w-5" />
-            </button>
+            </Link>
             <button type="button" onClick={openCart} aria-label="Carrito" className="relative">
               <CartIcon className="h-5 w-5" />
               {itemCount > 0 && (
