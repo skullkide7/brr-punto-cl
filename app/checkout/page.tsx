@@ -103,7 +103,7 @@ export default function CheckoutPage() {
             placeholder="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-foreground/25 bg-background px-4 py-3 text-sm placeholder:text-foreground/50 focus:border-foreground/60 focus:outline-none"
+            className="w-full rounded-xl border border-foreground/25 bg-white px-4 py-3 text-sm placeholder:text-foreground/50 focus:border-foreground/60 focus:outline-none"
           />
           <label className="mt-3 flex items-center gap-2 text-sm">
             <input
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
         <div>
           <h2 className="mb-4 text-2xl font-black">Entrega</h2>
           <div className="flex flex-col gap-3">
-            <div className="rounded-xl border border-foreground/25 bg-foreground/5 px-4 py-3 text-sm">
+            <div className="rounded-xl border border-foreground/25 bg-background px-4 py-3 text-sm">
               <span className="block text-xs opacity-60">País / Región</span>
               Chile
             </div>
@@ -176,8 +176,10 @@ export default function CheckoutPage() {
           {lines.map((line) => (
             <li key={line.variantId} className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-tan/60 bg-white">
-                  <Image src={line.image} alt={line.title} fill sizes="56px" className="object-contain" />
+                <div className="relative h-14 w-14 shrink-0">
+                  <div className="relative h-full w-full overflow-hidden rounded-xl border border-tan/60 bg-white">
+                    <Image src={line.image} alt={line.title} fill sizes="56px" className="object-contain" />
+                  </div>
                   <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1 text-[11px] font-bold text-background">
                     {line.quantity}
                   </span>
@@ -202,7 +204,7 @@ export default function CheckoutPage() {
           ) : (
             <form
               onSubmit={handleApplyDiscount}
-              className="flex items-center gap-2 rounded-full border border-foreground/25 bg-background p-1 pl-4"
+              className="flex items-center gap-2 rounded-full border border-foreground/25 bg-white p-1 pl-4"
             >
               <input
                 value={discountInput}

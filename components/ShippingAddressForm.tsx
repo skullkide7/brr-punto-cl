@@ -18,7 +18,7 @@ export default function ShippingAddressForm({
   }
 
   const inputClass =
-    'w-full rounded-xl border border-foreground/25 bg-background px-4 py-3 text-sm placeholder:text-foreground/50 focus:border-foreground/60 focus:outline-none disabled:opacity-50';
+    'w-full rounded-xl border border-foreground/25 bg-white px-4 py-3 text-sm placeholder:text-foreground/50 focus:border-foreground/60 focus:outline-none disabled:opacity-50';
 
   return (
     <div className="flex flex-col gap-3">
