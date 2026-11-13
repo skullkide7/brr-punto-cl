@@ -59,9 +59,7 @@ export default function AdminRafflePanel() {
         />
       </div>
 
-      <p className="mb-6 text-sm opacity-60">
-        Participan los clientes que compraron algo y subieron una foto de su gato durante ese mes.
-      </p>
+      <p className="mb-6 text-sm opacity-60">Participan los clientes que compraron algo durante ese mes.</p>
 
       {error && <p className="text-sm text-red-700">{error}</p>}
       {loading && <p className="text-sm opacity-60">Cargando…</p>}
@@ -84,9 +82,7 @@ export default function AdminRafflePanel() {
               <div>
                 <span className="font-bold">{entry.customer.name}</span>{' '}
                 <span className="opacity-60">({entry.customer.email})</span>
-                <p className="text-xs opacity-50">
-                  {entry.orderCount} compra(s) · {entry.photoCount} foto(s) este mes
-                </p>
+                <p className="text-xs opacity-50">{entry.orderCount} compra(s) este mes</p>
               </div>
               <button
                 type="button"

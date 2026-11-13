@@ -5,6 +5,7 @@ import { CartProvider } from '@/lib/cart-context';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
+import SessionProviderWrapper from '@/components/SessionProviderWrapper';
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -22,12 +23,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className={`${nunito.variable} font-body`}>
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+        <SessionProviderWrapper>
+          <CartProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <CartDrawer />
+          </CartProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   );

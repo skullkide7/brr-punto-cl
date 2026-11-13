@@ -1,11 +1,10 @@
 import { getRedis } from './redis';
-import { listCustomers, type PublicCustomer, toPublicCustomer } from './customers';
+import { listCustomers, type Customer } from './customers';
 import { listOrders, monthKey } from './orders';
 
 export type RaffleEntrant = {
-  customer: PublicCustomer;
+  customer: Customer;
   orderCount: number;
-  photoCount: number;
 };
 
 export type RaffleWinner = {
@@ -27,9 +26,8 @@ export async function getRaffleEntrants(yyyyMm: string): Promise<RaffleEntrant[]
   const entrants: RaffleEntrant[] = [];
   for (const customer of customers) {
     const orderCount = ordersByEmail.get(customer.email) ?? 0;
-    const photoCount = customer.catPhotos.filter((p) => monthKey(p.uploadedAt) === yyyyMm).length;
-    if (orderCount > 0 && photoCount > 0) {
-      entrants.push({ customer: toPublicCustomer(customer), orderCount, photoCount });
+    if (orderCount > 0) {
+      entrants.push({ customer, orderCount });
     }
   }
 

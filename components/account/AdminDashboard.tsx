@@ -1,25 +1,25 @@
 'use client';
 
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
 import AdminDiscountsPanel from './AdminDiscountsPanel';
 import AdminOrdersPanel from './AdminOrdersPanel';
 import AdminRafflePanel from './AdminRafflePanel';
 
 type Tab = 'descuentos' | 'ventas' | 'sorteo';
 
-export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
+export default function AdminDashboard() {
   const [tab, setTab] = useState<Tab>('ventas');
-
-  async function handleLogout() {
-    await fetch('/api/admin/logout', { method: 'POST' });
-    onLogout();
-  }
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-16">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-black">Panel de administración</h1>
-        <button type="button" onClick={handleLogout} className="text-sm opacity-60 hover:opacity-100">
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="text-sm opacity-60 hover:opacity-100"
+        >
           Cerrar sesión
         </button>
       </div>
