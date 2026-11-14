@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Nunito } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/lib/cart-context';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import SiteChrome from '@/components/SiteChrome';
 import CartDrawer from '@/components/CartDrawer';
 import SessionProviderWrapper from '@/components/SessionProviderWrapper';
 
@@ -25,9 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${nunito.variable} font-body`}>
         <SessionProviderWrapper>
           <CartProvider>
-            <Header />
-            <main>{children}</main>
-            <Footer />
+            <SiteChrome>{children}</SiteChrome>
             <CartDrawer />
           </CartProvider>
         </SessionProviderWrapper>

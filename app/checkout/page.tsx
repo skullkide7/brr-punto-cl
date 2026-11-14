@@ -78,22 +78,19 @@ export default function CheckoutPage() {
 
   if (lines.length === 0) {
     return (
-      <div className={`${checkoutFont.className} w-full bg-white`}>
-        <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
-          <h1 className="text-2xl font-black">Tu carrito está vacío</h1>
-          <Link href="/" className="btn btn-primary">
-            Volver a la tienda
-          </Link>
-        </section>
+      <div className={`${checkoutFont.className} flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-white px-4 text-center`}>
+        <h1 className="text-2xl font-black">Tu carrito está vacío</h1>
+        <Link href="/" className="btn btn-primary">
+          Volver a la tienda
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className={`${checkoutFont.className} w-full bg-white`}>
-    <section className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-16 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:px-6">
+    <div className={`${checkoutFont.className} grid min-h-screen grid-cols-1 bg-white lg:grid-cols-[1fr_480px]`}>
       {/* Left column: contact + delivery form */}
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
         <div>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-black">Contacto</h2>
@@ -169,10 +166,10 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Right column: order summary */}
-      <div className="flex flex-col gap-6 rounded-card bg-tan/15 p-8 lg:sticky lg:top-28 lg:self-start">
-        <div className="relative h-12 w-16">
-          <Image src={LOGO_URL} alt="BRR" fill sizes="64px" className="object-contain object-left" />
+      {/* Right column: order summary, fills the entire right side */}
+      <div className="flex flex-col gap-6 bg-tan/30 px-8 py-12 sm:px-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-16">
+        <div className="relative h-24 w-32">
+          <Image src={LOGO_URL} alt="BRR" fill sizes="128px" className="object-contain object-left" />
         </div>
 
         <ul className="flex flex-col gap-4">
@@ -255,7 +252,6 @@ export default function CheckoutPage() {
           <p className="text-right text-xs opacity-60">Incluye {formatCLP(taxAmount)} de impuestos</p>
         </div>
       </div>
-    </section>
     </div>
   );
 }
