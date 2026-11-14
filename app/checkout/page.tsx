@@ -88,7 +88,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className={`${checkoutFont.className} grid min-h-screen grid-cols-1 bg-white lg:grid-cols-[1fr_480px]`}>
+    <div className={`${checkoutFont.className} grid min-h-screen grid-cols-1 bg-white lg:grid-cols-2`}>
       {/* Left column: contact + delivery form */}
       <div className="flex flex-col gap-10 px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
         <div>
@@ -167,89 +167,91 @@ export default function CheckoutPage() {
       </div>
 
       {/* Right column: order summary, fills the entire right side */}
-      <div className="flex flex-col gap-6 bg-background px-8 py-12 sm:px-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-16">
-        <div className="relative h-24 w-32">
-          <Image src={LOGO_URL} alt="BRR" fill sizes="128px" className="object-contain object-left" />
-        </div>
+      <div className="flex flex-col items-center gap-8 bg-background px-8 py-12 sm:px-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-16">
+        <div className="w-full max-w-xl">
+          <div className="relative mx-auto h-40 w-56">
+            <Image src={LOGO_URL} alt="BRR" fill sizes="224px" className="object-contain" />
+          </div>
 
-        <ul className="flex flex-col gap-4">
-          {lines.map((line) => (
-            <li key={line.variantId} className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="relative h-14 w-14 shrink-0">
-                  <div className="relative h-full w-full overflow-hidden rounded-xl border border-tan/60 bg-white">
-                    <Image src={line.image} alt={line.title} fill sizes="56px" className="object-contain" />
+          <ul className="mt-10 flex flex-col gap-6">
+            {lines.map((line) => (
+              <li key={line.variantId} className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="relative h-20 w-20 shrink-0">
+                    <div className="relative h-full w-full overflow-hidden rounded-xl border border-tan/60 bg-white">
+                      <Image src={line.image} alt={line.title} fill sizes="80px" className="object-contain" />
+                    </div>
+                    <span className="absolute -top-2 -right-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-foreground px-1 text-sm font-bold text-background">
+                      {line.quantity}
+                    </span>
                   </div>
-                  <span className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1 text-[11px] font-bold text-background">
-                    {line.quantity}
-                  </span>
+                  <p className="text-lg font-bold">{line.title}</p>
                 </div>
-                <p className="text-sm font-bold">{line.title}</p>
+                <span className="shrink-0 text-lg font-black">{formatCLP(line.price * line.quantity)}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8">
+            {appliedDiscount ? (
+              <div className="flex items-center justify-between rounded-full border border-sage/60 bg-sage/10 px-5 py-3 text-base">
+                <span className="font-bold">
+                  Código {appliedDiscount.code} (-{appliedDiscount.percentage}%)
+                </span>
+                <button type="button" onClick={removeDiscount} className="text-sm opacity-60 hover:opacity-100">
+                  Quitar
+                </button>
               </div>
-              <span className="shrink-0 font-black">{formatCLP(line.price * line.quantity)}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div>
-          {appliedDiscount ? (
-            <div className="flex items-center justify-between rounded-full border border-sage/60 bg-sage/10 px-4 py-2 text-sm">
-              <span className="font-bold">
-                Código {appliedDiscount.code} (-{appliedDiscount.percentage}%)
-              </span>
-              <button type="button" onClick={removeDiscount} className="text-xs opacity-60 hover:opacity-100">
-                Quitar
-              </button>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleApplyDiscount}
-              className="flex items-center gap-2 rounded-full border border-foreground/25 bg-white p-1 pl-4"
-            >
-              <input
-                value={discountInput}
-                onChange={(e) => setDiscountInput(e.target.value)}
-                placeholder="Código de descuento"
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-foreground/50"
-              />
-              <button
-                type="submit"
-                disabled={applyingDiscount}
-                className="rounded-full bg-foreground/10 px-4 py-2 text-sm font-bold text-foreground/70 disabled:opacity-50"
+            ) : (
+              <form
+                onSubmit={handleApplyDiscount}
+                className="flex items-center gap-2 rounded-full border border-foreground/25 bg-white p-1.5 pl-5"
               >
-                {applyingDiscount ? 'Validando…' : 'Aplicar'}
-              </button>
-            </form>
-          )}
-          {discountError && <p className="mt-2 text-xs text-red-700">{discountError}</p>}
-        </div>
+                <input
+                  value={discountInput}
+                  onChange={(e) => setDiscountInput(e.target.value)}
+                  placeholder="Código de descuento"
+                  className="flex-1 bg-transparent text-base outline-none placeholder:text-foreground/50"
+                />
+                <button
+                  type="submit"
+                  disabled={applyingDiscount}
+                  className="rounded-full bg-foreground/10 px-5 py-2.5 text-base font-bold text-foreground/70 disabled:opacity-50"
+                >
+                  {applyingDiscount ? 'Validando…' : 'Aplicar'}
+                </button>
+              </form>
+            )}
+            {discountError && <p className="mt-2 text-sm text-red-700">{discountError}</p>}
+          </div>
 
-        <div className="flex flex-col gap-2 border-t border-foreground/15 pt-4 text-sm">
-          <div className="flex items-center justify-between opacity-70">
-            <span>Subtotal</span>
-            <span>{formatCLP(subtotal)}</span>
-          </div>
-          {appliedDiscount && (
-            <div className="flex items-center justify-between text-sage">
-              <span>Descuento</span>
-              <span>-{formatCLP(discountAmount)}</span>
+          <div className="mt-8 flex flex-col gap-3 border-t border-foreground/15 pt-6 text-base">
+            <div className="flex items-center justify-between opacity-70">
+              <span>Subtotal</span>
+              <span>{formatCLP(subtotal)}</span>
             </div>
-          )}
-          <div className="flex items-center justify-between opacity-70">
-            <span>Envío</span>
-            <span>{shippingRate ? formatCLP(shippingRate.price) : 'Por calcular'}</span>
+            {appliedDiscount && (
+              <div className="flex items-center justify-between text-sage">
+                <span>Descuento</span>
+                <span>-{formatCLP(discountAmount)}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between opacity-70">
+              <span>Envío</span>
+              <span>{shippingRate ? formatCLP(shippingRate.price) : 'Por calcular'}</span>
+            </div>
           </div>
-        </div>
 
-        <div className="border-t border-foreground/15 pt-4">
-          <div className="flex items-end justify-between">
-            <span className="text-xl font-black">Total</span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs opacity-60">CLP</span>
-              <span className="text-2xl font-black">{formatCLP(total)}</span>
+          <div className="mt-8 border-t border-foreground/15 pt-6">
+            <div className="flex items-end justify-between">
+              <span className="text-3xl font-black">Total</span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm opacity-60">CLP</span>
+                <span className="text-4xl font-black">{formatCLP(total)}</span>
+              </div>
             </div>
+            <p className="text-right text-sm opacity-60">Incluye {formatCLP(taxAmount)} de impuestos</p>
           </div>
-          <p className="text-right text-xs opacity-60">Incluye {formatCLP(taxAmount)} de impuestos</p>
         </div>
       </div>
     </div>
