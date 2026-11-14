@@ -119,7 +119,7 @@ export default function CheckoutPage() {
         <div>
           <h2 className="mb-4 text-2xl font-black">Entrega</h2>
           <div className="flex flex-col gap-3">
-            <div className="rounded-xl border border-foreground/25 bg-background px-4 py-3 text-sm">
+            <div className="rounded-xl border border-foreground/25 bg-white px-4 py-3 text-sm">
               <span className="block text-xs opacity-60">País / Región</span>
               Chile
             </div>
