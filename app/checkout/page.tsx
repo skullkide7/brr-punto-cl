@@ -167,7 +167,7 @@ export default function CheckoutPage() {
       </div>
 
       {/* Right column: order summary, fills the entire right side */}
-      <div className="flex flex-col gap-6 bg-tan/30 px-8 py-12 sm:px-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-16">
+      <div className="flex flex-col gap-6 bg-background px-8 py-12 sm:px-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-16">
         <div className="relative h-24 w-32">
           <Image src={LOGO_URL} alt="BRR" fill sizes="128px" className="object-contain object-left" />
         </div>
