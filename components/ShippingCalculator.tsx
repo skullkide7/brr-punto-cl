@@ -17,7 +17,7 @@ export default function ShippingCalculator({
   const communes = useMemo(() => (region ? getCommunesByRegion(region) : []), [region]);
 
   const selectClass =
-    'w-full rounded-xl border border-foreground/25 bg-background px-4 py-3 text-sm focus:border-foreground/60 focus:outline-none disabled:opacity-50';
+    'w-full rounded-xl border border-foreground/25 bg-white px-4 py-3 text-sm focus:border-foreground/60 focus:outline-none disabled:opacity-50';
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

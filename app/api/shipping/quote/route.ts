@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProductByHandle, getProductWeightKg } from '@/lib/products';
-import { fetchShippingRates } from '@/lib/shipping';
+import { fetchShippingRates, ShippingRate } from '@/lib/shipping';
+import { communes } from '@/lib/communes';
 
 type QuoteRequestItem = { handle: string; quantity: number };
+
+const RM_FLAT_RATE: ShippingRate = {
+  courierName: 'BRR',
+  serviceName: 'Despacho Región Metropolitana',
+  price: 3500,
+  days: 2,
+};
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -21,6 +29,11 @@ export async function POST(request: NextRequest) {
 
   if (totalWeightKg <= 0) {
     return NextResponse.json({ ok: false, error: 'El carrito está vacío.' }, { status: 400 });
+  }
+
+  const commune = communes.find((c) => c.id === toCommuneId);
+  if (commune?.region === 'Metropolitana') {
+    return NextResponse.json({ ok: true, rates: [RM_FLAT_RATE] });
   }
 
   const result = await fetchShippingRates(toCommuneId, totalWeightKg);
