@@ -79,7 +79,7 @@ export default function ShippingMethodSelector({
 
   return (
     <div className="flex flex-col gap-4 rounded-card border-2 border-tan p-6">
-      <h2 className="font-heading text-lg font-black">Métodos de envío</h2>
+      <h2 className="text-lg font-black">Métodos de envío</h2>
 
       {!communeId && (
         <p className="text-sm opacity-60">

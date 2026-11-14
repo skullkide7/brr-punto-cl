@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Inter } from 'next/font/google';
 import { useCart } from '@/lib/cart-context';
 import { formatCLP } from '@/lib/format';
 import { LOGO_URL } from '@/lib/products';
@@ -10,6 +11,8 @@ import ShippingCalculator from '@/components/ShippingCalculator';
 import ShippingMethodSelector from '@/components/ShippingMethodSelector';
 import ShippingAddressForm from '@/components/ShippingAddressForm';
 import { communes } from '@/lib/communes';
+
+const checkoutFont = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'] });
 
 type Rate = { courierName: string; serviceName: string; price: number; days: number };
 type AddressFields = {
@@ -75,7 +78,7 @@ export default function CheckoutPage() {
 
   if (lines.length === 0) {
     return (
-      <div className="w-full bg-white">
+      <div className={`${checkoutFont.className} w-full bg-white`}>
         <section className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
           <h1 className="text-2xl font-black">Tu carrito está vacío</h1>
           <Link href="/" className="btn btn-primary">
@@ -87,7 +90,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="w-full bg-white">
+    <div className={`${checkoutFont.className} w-full bg-white`}>
     <section className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-16 lg:grid-cols-[1.4fr_1fr] lg:items-start lg:px-6">
       {/* Left column: contact + delivery form */}
       <div className="flex flex-col gap-10">
